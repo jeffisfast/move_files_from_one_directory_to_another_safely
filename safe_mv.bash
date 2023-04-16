@@ -40,6 +40,7 @@ dest_dir="$2"
 counter=0
 errorcounter=0
 renamecounter=0
+skipcounter=0
 
 # Check if the source directory exists
 if [ ! -d "$src_dir" ]; then
@@ -61,7 +62,8 @@ for file in "$src_dir"/*; do
     # Check if it's a file
     if [ -f "$file" ]; then
         if lsof -t "$file" > /dev/null; then
-            echo "Skipping open file: $file"
+            echo "\nSkipping open file: $file\n\n"
+            skipcounter=$((skipcounter+1))
         else
             # Get the file's name and extension
             filename=$(basename "$file")
@@ -103,3 +105,4 @@ done
 echo "\n. Done. \nMoved $counter files."
 echo "Renamed $renamecounter files."
 echo "Failed to move $errorcounter files."
+echo "Skipped $skipcounter files."
