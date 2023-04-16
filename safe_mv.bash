@@ -5,6 +5,27 @@
 # not overwrite a file in the destination directory if a file with the same name already exists, instead it will 
 # rename it.  The script will also skip any files that are currently open.
 
+# Function to print the progress bar
+print_progress() {
+    local current=$1
+    local total=$2
+    local progress=$((current * 100 / total))
+    local currentfile=$3
+
+    printf '\033[1A\033[K'
+    printf "Progress: ["
+    for ((i = 0; i < progress / 2; i++)); do
+        printf "#"
+    done
+    for ((i = progress / 2; i < 50; i++)); do
+        printf " "
+    done
+    printf "] %d%%" "$progress" 
+    printf " $currentfile\n"
+    
+}
+
+
 # Check if the correct number of arguments is provided
 if [ $# -ne 2 ]; then
     echo "Usage: $0 <source_directory> <destination_directory>"
@@ -27,6 +48,10 @@ fi
 
 # Create the destination directory if it doesn't exist
 mkdir -p "$dest_dir"
+
+# Count the number of files in the source directory
+total_files=$(find "$src_dir" -maxdepth 1 -type f | wc -l)
+processed_files=0
 
 # Loop through the files in the source directory
 for file in "$src_dir"/*; do
@@ -51,7 +76,7 @@ for file in "$src_dir"/*; do
                 samefilecount=$((samefilecount + 1))
             done
             
-            if samefilecount -gt 1; then
+            if [ $samefilecount -gt 1 ]; then
                 renamecounter=$((renamecounter+1))
             fi
 
@@ -67,6 +92,9 @@ for file in "$src_dir"/*; do
             fi
         fi
     fi
+    # Update progress
+    processed_files=$((processed_files + 1))
+    print_progress "$processed_files" "$total_files" "$dest_file"
 done
 
 echo "Moved $counter files."
