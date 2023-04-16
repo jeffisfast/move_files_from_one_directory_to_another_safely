@@ -74,7 +74,7 @@ for file in "$src_dir"/*; do
             # Check for existing files with the same name in the destination directory
             samefilecount=1
             while [ -e "$dest_file" ]; do
-                echo "File '$dest_file' already exists, renaming."
+                echo "\nFile '$dest_file' already exists, renaming.\n\n"
                 dest_file="$dest_dir/${name}_$samefilecount.$ext"
                 samefilecount=$((samefilecount + 1))
             done
@@ -88,7 +88,7 @@ for file in "$src_dir"/*; do
 
             # Check if the move was successful
             if [ ! $? -eq 0 ]; then
-                echo "Error: Failed to move $file to $dest_file."
+                echo "\nError: Failed to move $file to $dest_file.\n\n"
                 errorcounter=$((errorcounter+1))
             else
                 counter=$((counter+1))
