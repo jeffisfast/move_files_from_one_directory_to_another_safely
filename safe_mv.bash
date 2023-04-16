@@ -11,6 +11,7 @@ print_progress() {
     local total=$2
     local progress=$((current * 100 / total))
     local currentfile=$3
+    local remainingfiles=$((total - current))
 
     printf '\033[1A\033[K'
     printf "Progress: ["
@@ -21,7 +22,7 @@ print_progress() {
         printf " "
     done
     printf "] %d%%" "$progress" 
-    printf " $currentfile\n"
+    printf " $remainingfiles $currentfile\n"
     
 }
 
@@ -52,6 +53,8 @@ mkdir -p "$dest_dir"
 # Count the number of files in the source directory
 total_files=$(find "$src_dir" -maxdepth 1 -type f | wc -l)
 processed_files=0
+
+echo "\nMoving $total_files files from $src_dir to $dest_dir.\n\n"
 
 # Loop through the files in the source directory
 for file in "$src_dir"/*; do
@@ -97,6 +100,6 @@ for file in "$src_dir"/*; do
     print_progress "$processed_files" "$total_files" "$dest_file"
 done
 
-echo "Moved $counter files."
+echo "\n. Done. \nMoved $counter files."
 echo "Renamed $renamecounter files."
 echo "Failed to move $errorcounter files."
