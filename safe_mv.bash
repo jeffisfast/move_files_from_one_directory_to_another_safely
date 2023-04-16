@@ -55,14 +55,14 @@ mkdir -p "$dest_dir"
 total_files=$(find "$src_dir" -maxdepth 1 -type f | wc -l)
 processed_files=0
 
-echo "\nMoving $total_files files from $src_dir to $dest_dir.\n\n"
+echo -e "\nMoving $total_files files from $src_dir to $dest_dir.\n\n"
 
 # Loop through the files in the source directory
 for file in "$src_dir"/*; do
     # Check if it's a file
     if [ -f "$file" ]; then
         if lsof -t "$file" > /dev/null; then
-            echo "\nSkipping open file: $file\n\n"
+            echo -e "\nSkipping open file: $file\n\n"
             skipcounter=$((skipcounter+1))
         else
             # Get the file's name and extension
@@ -76,7 +76,7 @@ for file in "$src_dir"/*; do
             # Check for existing files with the same name in the destination directory
             samefilecount=1
             while [ -e "$dest_file" ]; do
-                echo "\nFile '$dest_file' already exists, renaming.\n\n"
+                echo -e "\nFile '$dest_file' already exists, renaming.\n\n"
                 dest_file="$dest_dir/${name}_$samefilecount.$ext"
                 samefilecount=$((samefilecount + 1))
             done
@@ -90,7 +90,7 @@ for file in "$src_dir"/*; do
 
             # Check if the move was successful
             if [ ! $? -eq 0 ]; then
-                echo "\nError: Failed to move $file to $dest_file.\n\n"
+                echo -e "\nError: Failed to move $file to $dest_file.\n\n"
                 errorcounter=$((errorcounter+1))
             else
                 counter=$((counter+1))
@@ -102,7 +102,7 @@ for file in "$src_dir"/*; do
     print_progress "$processed_files" "$total_files" "$dest_file"
 done
 
-echo "\n. Done. \nMoved $counter files."
-echo "Renamed $renamecounter files."
-echo "Failed to move $errorcounter files."
-echo "Skipped $skipcounter files."
+echo -e "\n. Done. \nMoved $counter files."
+echo -e "Renamed $renamecounter files."
+echo -e "Failed to move $errorcounter files."
+echo -e "Skipped $skipcounter files."
